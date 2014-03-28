@@ -24,4 +24,7 @@ describe Person do
     earl.reload
     earl.spouse_id.should eq steve.id
   end
+
+  it {should have_many :children}
+  it {should have_many :parents}
 end
