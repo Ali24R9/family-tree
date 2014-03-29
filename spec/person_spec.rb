@@ -25,6 +25,5 @@ describe Person do
     earl.spouse_id.should eq steve.id
   end
 
-  it {should have_many :children}
-  it {should have_many :parents}
+  it {should have_many :relationships}
 end

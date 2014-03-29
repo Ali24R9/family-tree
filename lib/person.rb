@@ -3,8 +3,7 @@ class Person < ActiveRecord::Base
 
   after_save :make_marriage_reciprocal
 
-  has_many :children
-  has_many :parents
+  has_many :relationships
   def spouse
     if spouse_id.nil?
       nil

@@ -18,7 +18,8 @@ def menu
     puts 'Press l to list out the family members.'
     puts 'Press m to add who someone is married to.'
     puts 'Press s to see who someone is married to.'
-    puts 'Press ac to add a child'
+    puts 'Press ar to add a child'
+    puts 'Press vc to view a persons children'
     puts 'Press e to exit.'
     choice = gets.chomp
 
@@ -31,8 +32,10 @@ def menu
       add_marriage
     when 's'
       show_marriage
-    when 'ac'
-      child_menu
+    when 'ar'
+      add_relationship
+    when 'vc'
+      view_children
     when 'e'
       exit
     end
@@ -46,27 +49,25 @@ def add_person
   puts person.name + " was added to the family tree.\n\n"
   person
 end
-## children
+## relationship
 
-def child_menu
+def add_relationship
   list
-  puts "choose the id of the child"
-    add_child(gets.chomp.to_i)
+  puts "Choose the id of who you want to add a relationship to"
+  input = gets.chomp.to_i
+
+  person1 = Person.find(input)
+  list
+  puts "Choose (by id) who you want to relate the person to"
+  input2 = gets.chomp.to_i
+  person2 = Person.find(input2)
+  puts "How is the second person related to the first?"
+  kind = gets.chomp
+  relationship = Relationship.create({person_id: person1.id, relative_id: person2.id, relation: kind})
+
 end
 
-def add_child(child_id)
-  person = Person.find(child_id)
-  list
-  puts "Choose one of the parents to associate the child with"
 
-  parent = Person.find(gets.chomp.to_i)
-  parent = Parent.create({ person_id: parent.id, child_id: person.id })
-# binding.pry
-  child = Child.create({parent_id: parent.id, person_id: person.id})
-  # person.parents_id = parent.id
-  puts "#{child.person.name} is a child of #{parent.person.name}"
-  puts "\n\n"
-end
 ## marriage
 def add_marriage
   list
@@ -96,6 +97,24 @@ def show_marriage
 rescue
   puts '---------This person is not married--------'
   menu
+end
+
+def view_children
+  puts "\n\n"
+  list
+  puts "Whose children do you want to view?"
+  parent_id =gets.chomp.to_i
+  parent = Person.find(parent_id)
+  sons = parent.relationships.where({relation: "Son"})
+# binding.pry
+  name = nil
+  # binding.pry
+  sons.each do |son|
+    name = Person.find(son.relative_id)
+    name = name.name
+  end
+  puts "#{parent.name} has a son named #{name}"
+  # binding.pry
 end
 
 menu
